@@ -35,18 +35,18 @@ Note: since the data contain Chinese characters, so we need to encode the CSV fi
 
 ## Simulation
 
-### Example1-3 Folder Description:
+### Example1-3  Description:
 | File Name | Description  |
 | ------- | --- |
 | Code/COX_FullVersion.R | The original code to run the simulation under Cox Model setup |
 |Code/GLM_FullVersion.R| The original code to run the simulation under Generalized Linear Model  setup |
 |Code/LM_FullVersion.R| The original code to run the simulation under  Linear Model  setup|
 |Code/ResultsAnalysis.Rmd| Analyze the intermediate results and generate Table 1 in paper|
-|Intermediate|Store all the intermediate data for simulations|
+|Folder Intermediate|Store all the intermediate data for simulations|
 
 
 
-### Example4 Folder Description:
+### Example4  Description:
 
 Code/Robustness.R: The original code to tun the simulation
 
