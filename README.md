@@ -81,14 +81,14 @@ The following steps give the instruction on how to reproduce the analytical resu
 ### Step 4: Simulation Exampe 4 (Table 2 in paper):: Use the “”Simulation/Example4” folder:
 (1)	Run the “Code/Robustness.R”. It might take 10 hours to run this file.  
 (2)	We store the intermediate results for simulation in “Intermediate” folder.  
-(3)	Use ‘Code/ResultsAnalysisRmd to generate performance evaluation for simulation.  
+(3)	Use ‘Code/ResultsAnalysis.Rmd to generate performance evaluation for simulation.  
 
 ### Step 5: Case Study Part: Use the “”CaseStudy” folder:
 (1)	Use ‘CaseStudy/Code/CaseStudyCode_Final.Rmd’ file to generate the results.  
 
 ### Step 6: Supplementary Part: Use the ‘”SUPP” folder: 
-(1)	‘TableS.1/Code/TableS.1.Rmd’ reproduces the results in Table S.1 and ‘TableS.1/Results/TableS.1.html’ contains the associated results.   
-(2)	For reproducing the results TableS.2, file ‘TableS.2/Code/DistanceComparison.Rmd’ runs the simulation examples and we store the intermediate results in ‘TableS.2/Intermediate’ folder. File ‘TableS.2/Code/ResultsAnalysis.Rmd’ analyzes the intermediate results and we attch the outcome in ‘TableS.2/Results’ folder.   
-(3)	For Table S.3, ‘TableS.3/Overlap.Rmd’ reproduces the results.   
+(1)	‘TableS.1/TableS.1.Rmd’ reproduces the results in Table S.1.   
+(2)	For reproducing the results TableS.2, file ‘TableS.2/Code/DistanceComparison.Rmd’ runs the simulation examples and we store the intermediate results in ‘TableS.2/Intermediate’ folder. File ‘TableS.2/Code/ResultsAnalysis.Rmd’ analyzes the intermediate results.     
+(3)	For Table S.3, ‘TableS.3/Overlap.Rmd’ reproduces the results.    
 (4)	For Table S.4 and TableS.5, the utilized data is in ‘TableS.4&5/Data’ folder, and ‘TableS.4&5/Code/CaseStudy-Web.Rmd’ runs the corrosponding analysis and the generated results are attahced in ‘TableS.4&5/Results/ CaseStudy-Web.html’ file.   
 (5)	For Table S.6-S.8, use the code within ‘TableS.6-8’ folder.  
