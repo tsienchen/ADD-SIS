@@ -1,4 +1,4 @@
-# Feature Screening for Interval-Valued Response with Application to Salary Prediction in Job Markets
+# Feature Screening for Interval-Valued Response
 
 ## Install Packages: 
 
