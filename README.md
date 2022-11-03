@@ -63,7 +63,7 @@ The following steps give the instruction on how to reproduce the analytical resu
 ### Step 1: Install the corresponding packages:
 
 ### Step 2: Load the following R- packages with the specified versions: 
-| Package | Versioj  |
+| Package | Version  |
 | ------- | --- |
 |Icens version | 1.58.0|
 |Interval version|1.1-0.1|
@@ -74,10 +74,10 @@ The following steps give the instruction on how to reproduce the analytical resu
 
 
 ### Step 3: Simulation Example1-3 (Table 1 in paper): Use the “”Simulation/Example1-3” folder:
-(1)	Run the “Code/COX_FullVersion.R”, “Code/GLM_ FullVersion.R” and “Code/LM_ FullVersion.R” code. It might take 40 hours to run these three files. 
-(2)	We store the intermediate results for simulation in “Intermediate” folder
-(3)	Use ‘Code/ResultsAnalysis.Rmd’ to generate performance evaluation for simulation.
-(4)	“Results/ ResultsAnalysis.html” contains all generated results from file ‘Code/ResultsAnalysis.Rmd’
+(1)	Run the “Code/COX_FullVersion.R”, “Code/GLM_ FullVersion.R” and “Code/LM_ FullVersion.R” code. It might take 40 hours to run these three files. \
+(2)	We store the intermediate results for simulation in “Intermediate” folder. \ 
+(3)	Use ‘Code/ResultsAnalysis.Rmd’ to generate performance evaluation for simulation. \ 
+
 ### Step 4: Simulation Exampe 4 (Table 2 in paper):: Use the “”Simulation/Example4” folder:
 (1)	Run the “Code/Robustness.R”. It might take 10 hours to run this file. 
 (2)	We store the intermediate results for simulation in “Intermediate” folder
