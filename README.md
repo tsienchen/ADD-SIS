@@ -74,7 +74,7 @@ The following steps give the instruction on how to reproduce the analytical resu
 
 
 ### Step 3: Simulation Example1-3 (Table 1 in paper): Use the “”Simulation/Example1-3” folder:
-(1)	Run the “Code/COX_FullVersion.R”, “Code/GLM_ FullVersion.R” and “Code/LM_ FullVersion.R” code. It might take 40 hours to run these three files.  
+(1)	Run the “Code/COX_FullVersion.R”, “Code/GLM_ FullVersion.R” and “Code/LM_ FullVersion.R” code. 
 (2)	We store the intermediate results for simulation in “Intermediate” folder.  
 (3)	Use ‘Code/ResultsAnalysis.Rmd’ to generate performance evaluation for simulation.  
 
