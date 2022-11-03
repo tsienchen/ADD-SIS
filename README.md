@@ -1,4 +1,4 @@
-# ADD-SIS: Feature Screening for Interval-Valued Response
+# ADD-SIS for Interval-Valued Response
 
 ## Install Packages: 
 
