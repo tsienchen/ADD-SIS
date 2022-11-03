@@ -1,0 +1,229 @@
+---
+title: "TableS6-8"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning=FALSE)
+```
+```{r}
+library(readr)
+library(Icens)
+library(interval)
+library(MASS)
+library(dplyr)
+library(energy)
+
+```
+
+# Preparation
+
+
+```{r}
+analysis <- function (ress) {
+  res = ress [-1]
+                                                                                           
+  every <- cbind(c(sum(sapply(c(1:200),function(i) max(res[1:5,i])<37))/200,
+                   sum(sapply(c(1:200),function(i) max(res[16:20,i])<37))/200,
+                   sum(sapply(c(1:200),function(i) max(res[21:25,i])<37))/200,
+                   sum(sapply(c(1:200),function(i) max(res[26:30,i])<37))/200,
+                   sum(sapply(c(1:200),function(i) max(res[31:35,i])<37))/200,
+                   sum(sapply(c(1:200),function(i) max(res[36:40,i])<37))/200,
+                   sum(sapply(c(1:200),function(i) max(res[41:45,i])<37))/200,
+                   sum(sapply(c(1:200),function(i) max(res[46:50,i])<37))/200,
+                   sum(sapply(c(1:200),function(i) max(res[51:55,i])<37))/200,
+                   sum(sapply(c(1:200),function(i) max(res[56:60,i])<37))/200),
+                 c(sum(sapply(c(1:200),function(i) max(res[1:5,i])<75))/200,
+                   sum(sapply(c(1:200),function(i) max(res[16:20,i])<75))/200,
+                   sum(sapply(c(1:200),function(i) max(res[21:25,i])<75))/200,
+                   sum(sapply(c(1:200),function(i) max(res[26:30,i])<75))/200,
+                   sum(sapply(c(1:200),function(i) max(res[31:35,i])<75))/200,
+                   sum(sapply(c(1:200),function(i) max(res[36:40,i])<75))/200,
+                   sum(sapply(c(1:200),function(i) max(res[41:45,i])<75))/200,
+                   sum(sapply(c(1:200),function(i) max(res[46:50,i])<75))/200,
+                   sum(sapply(c(1:200),function(i) max(res[51:55,i])<75))/200,
+                   sum(sapply(c(1:200),function(i) max(res[56:60,i])<75))/200),
+                 c(sum(sapply(c(1:200),function(i) max(res[1:5,i])<113))/200,
+                   sum(sapply(c(1:200),function(i) max(res[16:20,i])<113))/200,
+                   sum(sapply(c(1:200),function(i) max(res[21:25,i])<113))/200,
+                   sum(sapply(c(1:200),function(i) max(res[26:30,i])<113))/200,
+                   sum(sapply(c(1:200),function(i) max(res[31:35,i])<113))/200,
+                   sum(sapply(c(1:200),function(i) max(res[36:40,i])<113))/200,
+                   sum(sapply(c(1:200),function(i) max(res[41:45,i])<113))/200,
+                   sum(sapply(c(1:200),function(i) max(res[46:50,i])<113))/200,
+                   sum(sapply(c(1:200),function(i) max(res[51:55,i])<113))/200,
+                   sum(sapply(c(1:200),function(i) max(res[56:60,i])<113))/200))
+  all <- rbind(sapply(c(1:5),function(i) sum(res[i,]<37)/200),
+               sapply(c(16:20),function(i) sum(res[i,]<37)/200),
+               sapply(c(21:25),function(i) sum(res[i,]<37)/200),
+               sapply(c(26:30),function(i) sum(res[i,]<37)/200),
+              sapply(c(31:35),function(i) sum(res[i,]<37)/200),
+               sapply(c(36:40),function(i) sum(res[i,]<37)/200),
+               sapply(c(41:45),function(i) sum(res[i,]<37)/200),
+              sapply(c(46:50),function(i) sum(res[i,]<37)/200),
+               sapply(c(51:55),function(i) sum(res[i,]<37)/200),
+               sapply(c(56:60),function(i) sum(res[i,]<37)/200))
+  
+  
+  print (every)
+  print (all)
+  }
+
+
+
+```
+
+
+
+# LM Model
+
+```{r}
+
+res1 <- read.csv("../../Simulation/Example1-3/Intermediate/LM/Full_res1_time.csv")
+res2<- read.csv("../../Simulation/Example1-3/Intermediate/LM/Full_res2_time.csv")
+res3 <- read.csv("../../Simulation/Example1-3/Intermediate/LM/Full_res4_time.csv")
+res4 <- read.csv("../../Simulation/Example1-3/Intermediate/LM/Full_res5_time.csv")
+res5 <- read.csv("../../Simulation/Example1-3/Intermediate/LM/Full_res7_time.csv")
+res6 <- read.csv("../../Simulation/Example1-3/Intermediate/LM/Full_res8_time.csv")
+res7 <- read.csv("../../Simulation/Example1-3/Intermediate/LM/Full_res10_time.csv")
+res8 <- read.csv("../../Simulation/Example1-3/Intermediate/LM/Full_res11_time.csv")
+```
+
+```{r}
+analysis(res1)
+```
+
+```{r}
+analysis(res2)
+```
+
+```{r}
+analysis(res3)
+```
+
+```{r}
+analysis(res4)
+```
+
+```{r}
+analysis(res5)
+```
+
+```{r}
+analysis(res6)
+```
+
+```{r}
+analysis(res7)
+```
+
+```{r}
+analysis(res8)
+```
+
+
+
+
+
+
+# GLM Model
+
+```{r}
+
+res1 <- read.csv("../../Simulation/Example1-3/Intermediate/GLM/Full_res1_time.csv")
+res2<- read.csv("../../Simulation/Example1-3/Intermediate/GLM/Full_res2_time.csv")
+res3 <- read.csv("../../Simulation/Example1-3/Intermediate/GLM/Full_res4_time.csv")
+res4 <- read.csv("../../Simulation/Example1-3/Intermediate/GLM/Full_res5_time.csv")
+res5 <- read.csv("../../Simulation/Example1-3/Intermediate/GLM/Full_res7_time.csv")
+res6 <- read.csv("../../Simulation/Example1-3/Intermediate/GLM/Full_res8_time.csv")
+res7 <- read.csv("../../Simulation/Example1-3/Intermediate/GLM/Full_res10_time.csv")
+res8 <- read.csv("../../Simulation/Example1-3/Intermediate/GLM/Full_res11_time.csv")
+```
+
+```{r}
+analysis(res1)
+```
+
+```{r}
+analysis(res2)
+```
+
+```{r}
+analysis(res3)
+```
+
+```{r}
+analysis(res4)
+```
+
+```{r}
+analysis(res5)
+```
+
+```{r}
+analysis(res6)
+```
+
+```{r}
+analysis(res7)
+```
+
+```{r}
+analysis(res8)
+```
+
+
+
+
+
+
+
+# COX Model
+
+```{r}
+
+res1 <- read.csv("../../Simulation/Example1-3/Intermediate/COX/Full_res1_time.csv")
+res2<- read.csv("../../Simulation/Example1-3/Intermediate/COX/Full_res2_time.csv")
+res3 <- read.csv("../../Simulation/Example1-3/Intermediate/COX/Full_res4_time.csv")
+res4 <- read.csv("../../Simulation/Example1-3/Intermediate/COX/Full_res5_time.csv")
+res5 <- read.csv("../../Simulation/Example1-3/Intermediate/COX/Full_res7_time.csv")
+res6 <- read.csv("../../Simulation/Example1-3/Intermediate/COX/Full_res8_time.csv")
+res7 <- read.csv("../../Simulation/Example1-3/Intermediate/COX/Full_res10_time.csv")
+res8 <- read.csv("../../Simulation/Example1-3/Intermediate/COX/Full_res11_time.csv")
+```
+
+```{r}
+analysis(res1)
+```
+
+```{r}
+analysis(res2)
+```
+
+```{r}
+analysis(res3)
+```
+
+```{r}
+analysis(res4)
+```
+
+```{r}
+analysis(res5)
+```
+
+```{r}
+analysis(res6)
+```
+
+```{r}
+analysis(res7)
+```
+
+```{r}
+analysis(res8)
+```
+
+
+
+

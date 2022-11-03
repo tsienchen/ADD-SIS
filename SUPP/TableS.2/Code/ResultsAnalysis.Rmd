@@ -1,0 +1,23 @@
+---
+title: "TableS.2-Result Analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+distance1 = read.csv("../Intermediate/simulation1.csv")
+total_size = 100
+KS = c(mean(as.numeric(distance1[1,1:total_size])),mean(as.numeric(distance1[3,1:total_size])))
+CVM = c(mean(as.numeric(distance1[2,1:total_size])),mean(as.numeric(distance1[4,1:total_size])))
+print(as.data.frame(cbind(KS,CVM),row.names = c("NPMLE","Empirical")))
+```
+
+```{r}
+distance2 = read.csv("../Intermediate/simulation2.csv")
+total_size = 100
+KS = c(mean(as.numeric(distance2[1,1:total_size])),mean(as.numeric(distance2[3,1:total_size])))
+CVM = c(mean(as.numeric(distance2[2,1:total_size])),mean(as.numeric(distance2[4,1:total_size])))
+print(as.data.frame(cbind(KS,CVM),row.names = c("NPMLE","Empirical")))
+```

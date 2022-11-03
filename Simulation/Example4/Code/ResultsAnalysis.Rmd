@@ -1,0 +1,117 @@
+---
+title: "Simulation_Analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+
+file_root = root_path = paste(dirname(getwd()),"/Intermediate/",sep="")
+
+```
+
+# d = 30
+
+```{r}
+ind_30 <- function(no){
+    name = paste(paste("Dim30Trial",as.character(no),sep=""),".csv",sep="")
+    ind = read.csv(paste(file_root,name,sep=""))
+    score = c(mean((678 - rank(ind$screen)[1:30])<30),
+ mean((678 - rank(ind$screen.1)[1:30])<30),
+   mean((678 - rank(ind$screen.2)[1:30])<30),
+    mean((678 - rank(ind$screen.3)[1:30])<30),
+    mean((678 - rank(ind$screen.4)[1:30])<30),
+    mean((678 - rank(ind$screen.5)[1:30])<30),
+    mean((678 - rank(ind$screen.6)[1:30])<30),
+    mean((678 - rank(ind$screen.7)[1:30])<30),
+    mean((678 - rank(ind$screen.8)[1:30])<30),
+    mean((678 - rank(ind$screen.9)[1:30])<30))
+    return (score)
+}
+```
+```{r}
+res_30 = sapply(c(1:99),ind_30)
+```
+
+```{r}
+proportion = c(mean(res_30[1,]),mean(res_30[2,]),mean(res_30[3,]),mean(res_30[4,]),mean(res_30[5,]),mean(res_30[6,]),
+  mean(res_30[7,]),mean(res_30[8,]),mean(res_30[9,]),mean(res_30[10,]))
+names = c("ADD-SIS","KF-M1","DCSIS-M1","MVSIS-M1",
+            "KF-M2","DCSIS-M2","MVSIS-M2",
+            "KF-M3","DCSIS-M3","MVSIS-M3")
+as.data.frame(proportion,row.names = names)
+```
+
+
+# d = 60
+
+```{r}
+ind_60 <- function(no){
+    
+        name = paste(paste("Dim60Trial",as.character(no),sep=""),".csv",sep="")
+    ind = read.csv(paste(file_root,name,sep=""))
+    score = c(mean((678 - rank(ind$screen)[1:60])<60),
+ mean((678 - rank(ind$screen.1)[1:60])<60),
+   mean((678 - rank(ind$screen.2)[1:60])<60),
+    mean((678 - rank(ind$screen.3)[1:60])<60),
+    mean((678 - rank(ind$screen.4)[1:60])<60),
+    mean((678 - rank(ind$screen.5)[1:60])<60),
+    mean((678 - rank(ind$screen.6)[1:60])<60),
+    mean((678 - rank(ind$screen.7)[1:60])<60),
+    mean((678 - rank(ind$screen.8)[1:60])<60),
+    mean((678 - rank(ind$screen.9)[1:60])<60))
+    
+    return (score)
+}
+
+res_60 = sapply(c(c(1:50),c(61:100)),ind_60)
+```
+
+```{r}
+proportion = c(mean(res_60[1,]),mean(res_60[2,]),mean(res_60[3,]),mean(res_60[4,]),mean(res_60[5,]),mean(res_60[6,]),
+  mean(res_60[7,]),mean(res_60[8,]),mean(res_60[9,]),mean(res_60[10,]))
+names = c("ADD-SIS","KF-M1","DCSIS-M1","MVSIS-M1",
+            "KF-M2","DCSIS-M2","MVSIS-M2",
+            "KF-M3","DCSIS-M3","MVSIS-M3")
+as.data.frame(proportion,row.names = names)
+```
+
+
+
+
+# d = 120
+
+```{r}
+ind_120 <- function(no){
+    
+        name = paste(paste("Dim120Trial",as.character(no),sep=""),".csv",sep="")
+    ind = read.csv(paste(file_root,name,sep=""))
+    score = c(mean((678 - rank(ind$screen)[1:120])<120),
+ mean((678 - rank(ind$screen.1)[1:120])<120),
+   mean((678 - rank(ind$screen.2)[1:120])<120),
+    mean((678 - rank(ind$screen.3)[1:120])<120),
+    mean((678 - rank(ind$screen.4)[1:120])<120),
+    mean((678 - rank(ind$screen.5)[1:120])<120),
+    mean((678 - rank(ind$screen.6)[1:120])<120),
+    mean((678 - rank(ind$screen.7)[1:120])<120),
+    mean((678 - rank(ind$screen.8)[1:120])<120),
+    mean((678 - rank(ind$screen.9)[1:120])<120))
+    
+    return (score)
+}
+
+res_120 = sapply(c(1:100),ind_120)
+```
+
+```{r}
+proportion = c(mean(res_120[1,]),mean(res_120[2,]),mean(res_120[3,]),mean(res_120[4,]),mean(res_120[5,]),mean(res_120[6,]),
+  mean(res_120[7,]),mean(res_120[8,]),mean(res_120[9,]),mean(res_120[10,]))
+names = c("ADD-SIS","KF-M1","DCSIS-M1","MVSIS-M1",
+            "KF-M2","DCSIS-M2","MVSIS-M2",
+            "KF-M3","DCSIS-M3","MVSIS-M3")
+as.data.frame(proportion,row.names = names)
+```

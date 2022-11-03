@@ -1,0 +1,812 @@
+---
+title: "CaseStudyCode"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Including Packages
+```{r}
+library(readr)
+library(Icens)
+library(interval)
+library(MASS)
+library(dplyr)
+library(energy)
+root_path = paste(dirname(getwd()),"/Data/",sep="")
+```
+
+
+## Loading Data
+
+```{r}
+dt <- read.csv(paste(root_path,"WordMatrix_Filter.csv",sep=""))
+REAL_TEST = subset(dt, select = -c(X1) )
+
+l = as.numeric(REAL_TEST$l) 
+r =  as.numeric(REAL_TEST$r) 
+s = as.data.frame(subset(REAL_TEST, select = -c(l,r) ))
+```
+
+
+## Data Visulization (Figure 3)
+```{r warning=FALSE}
+
+REAL_TEST <- read_csv(paste(root_path,"REAL_DATA.csv",sep=""))
+l = as.numeric(REAL_TEST$l)
+r =  as.numeric(REAL_TEST$r)
+kk <- REAL_TEST$des
+
+
+
+
+par(mfrow=c(3,3))
+word1 <- sapply(c(1:dim(REAL_TEST)[1]),function(i) grepl('\u4f18\u5316\u7b97\u6cd5',kk[i]))
+x1 <- word1
+every = data.frame(l=l,r=r,x=x1)
+part1 = every[every$x==0,c('l','r')]
+part2 = every[every$x==1,c('l','r')]
+plot(EMICM(part2),type='gw',main='Word:Optimization',xlab="Posted Salary")
+plot(EMICM(part1),new=FALSE,type='gw',lty=2)
+
+word1 <- sapply(c(1:dim(REAL_TEST)[1]),function(i) grepl("lstm",kk[i]))
+x1 <- word1
+every = data.frame(l=l,r=r,x=x1)
+part1 = every[every$x==0,c('l','r')]
+part2 = every[every$x==1,c('l','r')]
+plot(EMICM(part2),type='gw',main="Word:LSTM",xlab="Posted Salary")
+plot(EMICM(part1),new=FALSE,type='gw',lty=2)
+
+word1 <- sapply(c(1:dim(REAL_TEST)[1]),function(i) grepl('\u534f\u540c',kk[i]))
+x1 <- word1
+every = data.frame(l=l,r=r,x=x1)
+part1 = every[every$x==0,c('l','r')]
+part2 = every[every$x==1,c('l','r')]
+plot(EMICM(part2),type='gw',main="Word:Collaborative Filtering",xlab="Posted Salary",)
+plot(EMICM(part1),new=FALSE,type='gw',lty=2)
+
+
+
+
+word1 <- sapply(c(1:dim(REAL_TEST)[1]),function(i) grepl('excel',kk[i]))
+x1 <- word1
+every = data.frame(l=l,r=r,x=x1)
+part1 = every[every$x==1,c('l','r')]
+part2 = every[every$x==0,c('l','r')]
+plot(EMICM(part2),type='gw',main='Word:EXCEL',xlab='Posted Salary',lty=2)
+plot(EMICM(part1),new=FALSE,type='gw')
+
+word1 <- sapply(c(1:dim(REAL_TEST)[1]),function(i) grepl('\u6570\u636e\u6574\u7406',kk[i]))
+x1 <- word1
+every = data.frame(l=l,r=r,x=x1)
+part1 = every[every$x==1,c('l','r')]
+part2 = every[every$x==0,c('l','r')]
+plot(EMICM(part1),type='gw',main='Word:Data Preparation',xlab='Posted Salary')
+plot(EMICM(part2),new=FALSE,type='gw',lty=2)
+
+word1 <- sapply(c(1:dim(REAL_TEST)[1]),function(i) grepl('\u6570\u636e\u7edf\u8ba1',kk[i]))
+x1 <- word1
+every = data.frame(l=l,r=r,x=x1)
+part1 = every[every$x==1,c('l','r')]
+part2 = every[every$x==0,c('l','r')]
+plot(EMICM(part1),type='gw',main='Word:Data Summary',xlab='Posted Salary')
+plot(EMICM(part2),new=FALSE,type='gw',lty=2)
+
+
+word1 <- sapply(c(1:dim(REAL_TEST)[1]),function(i) grepl('\u5f85\u9047',kk[i]))
+x1 <- word1
+every = data.frame(l=l,r=r,x=x1)
+part1 = every[every$x==0,c('l','r')]
+part2 = every[every$x==1,c('l','r')]
+plot(EMICM(part1),type='gw',main='Word:Firm',xlab='Posted Salary',density=10)
+plot(EMICM(part2),new=FALSE,type='gw',lty=2)
+
+word1 <- sapply(c(1:dim(REAL_TEST)[1]),function(i) grepl('\u5de5\u4f5c',kk[i]))
+x1 <- word1
+every = data.frame(l=l,r=r,x=x1)
+part1 = every[every$x==0,c('l','r')]
+part2 = every[every$x==1,c('l','r')]
+plot(EMICM(part1),type='gw',main='Word:Job',xlab='Posted Salary')
+plot(EMICM(part2),new=FALSE,type='gw',lty=2)
+
+word1 <- sapply(c(1:dim(REAL_TEST)[1]),function(i) grepl('\u5de5\u5177',kk[i]))
+x1 <- word1
+every = data.frame(l=l,r=r,x=x1)
+part1 = every[every$x==0,c('l','r')]
+part2 = every[every$x==1,c('l','r')]
+plot(EMICM(part1),type='gw',main='Word:Tool',xlab='Posted Salary')
+plot(EMICM(part2),new=FALSE,type='gw',lty=2)
+
+
+```
+
+
+
+
+
+
+## ADD-SIS Code
+```{r}
+intervals <- initcomputeMLE(l,r)
+max_tmp <- max(intervals$intmap[2,])
+min_tmp <- min(intervals$intmap[1,])
+if (is.finite(max_tmp)) {end <- max_tmp} 
+if (is.infinite(max_tmp)) {end <-max(intervals$intmap[1,])+100 }
+if (is.finite(min_tmp)) {start <- min_tmp} 
+if (is.infinite(min_tmp)) {start <-min(intervals$intmap[2,])-100 }
+X1<-c(as.integer(start/100):as.integer(end/100))
+X2<-X1+1
+basis<- data.frame(x1=100*X1,x2=100*X2)
+
+int_split <- function(i,df){
+  start <- as.numeric(df[i,][1])/100
+  end <- as.numeric(df[i,][2])/100
+  difs <- end-start-1
+  x1 <- 100*(start+c(0:difs))
+  x2 <- 100*(start+1+c(0:difs))
+  x3 <- as.numeric(rep(df[i,][3]/(as.numeric(difs+1)),difs+1))
+  return (data.frame(x1=x1,x2=x2,x3=x3))
+  
+}
+
+
+
+screen_add <- function(no,s=s) {
+  #word1 <- sapply(c(1:length(sub)[1]),function(i) grepl(dict[no],kk[i]))
+  x1 <- s[,no]
+  every = data.frame(l=l,r=r,x=x1)
+  part1 = every[every$x==TRUE,c('l','r')]
+  part2 = every[every$x==FALSE,c('l','r')]
+  a <- initcomputeMLE(part1$l,part1$r)
+  b <- initcomputeMLE(part2$l,part2$r)
+  df1 <- data.frame(cbind(t(a$intmap),a$pf))
+  df2 <- data.frame(cbind(t(b$intmap),b$pf))
+  if (length(a$pf)==1){
+    if (max(df2$X2)>1) {kk2 = lapply(c(1:dim(df2)[1]),int_split,df=df2)
+    pp2 = bind_rows(kk2)}
+    if (max(df2$X2)==1) {ind_start <- (df2$X1/100)[1]
+    ind_end<- (df2$X1/100)[2]
+    pp2 <- data.frame(x1=100*c(ind_start:(ind_end-1)),
+                      x2=100*c((ind_start+1):(ind_end)),
+                      x3=rep(1/(end-start),as.numeric(ind_end-ind_start)))
+    }
+    tmp = merge(pp2,basis,all.y = TRUE)
+    tmp[is.na(tmp$x3),c('x3')]<-0
+    score_ = sum(100 * (cumsum(tmp$x3)))
+  }
+  else {
+    kk1 = lapply(c(1:dim(df1)[1]),int_split,df=df1)
+    pp1 = bind_rows(kk1)
+    
+    if (max(df2$X2)>1) {kk2 = lapply(c(1:dim(df2)[1]),int_split,df=df2)
+    pp2 = bind_rows(kk2)}
+    if (max(df2$X2)==1) {ind_start <- (df2$X1/100)[1]
+    ind_end<- (df2$X1/100)[2]
+    pp2 <- data.frame(x1=100*c(ind_start:(ind_end-1)),
+                      x2=100*c((ind_start+1):(ind_end)),
+                      x3=rep(1/(end-start),as.numeric(ind_end-ind_start)))
+    }
+    a1 = merge(pp1,basis,all.y = TRUE)
+    a2 = merge(pp2,basis,all.y = TRUE)
+    tmp <- merge(a1,a2,by='x1')
+    tmp[is.na(tmp$x3.x),c('x3.x')]<-0
+    tmp[is.na(tmp$x3.y),c('x3.y')]<-0
+    score_ = sum(100 * abs(cumsum(tmp$x3.x)-cumsum(tmp$x3.y)))}
+  
+  return(score_)
+  
+  
+}
+
+```
+
+
+
+## Screening (Time Column in Table 4)
+```{r  warning=FALSE}
+a = Sys.time()
+score <- sapply(c(1:as.numeric(dim(s)[2])),screen_add,s=s)
+b = Sys.time()
+print ("ADD-SIS")
+print (b-a)
+res1 <- data.frame(screen=score)
+
+three <- 2/3 * l + 1/3*r
+mid <- 0.5*(l+r)
+six <- 1/3 * l + 2/3*r
+
+
+
+screen_ks<- function(i,y,s)
+{every = data.frame(cbind(y,s[,i]))
+part1 = every[every$V2==0,c('y')]
+part2 = every[every$V2==1,c('y')]
+return (as.numeric(ks.test(part1,part2)$statistic))
+}
+
+screen_dc <- function(i,y,s)
+{return (dcor(y,s[,i]))}
+Fk<-function(X0,x) {
+  Fk=c()
+  for (i in 1:length(x))
+  { Fk[i]=sum(X0<=x[i])/length(X0) }
+  return(Fk)
+}
+
+Fkr<-function(X0,Y,yr,x) {
+  Fkr=c()
+  ind_yr=(Y==yr)
+  for (i in 1:length(x))
+  { Fkr[i]=sum((X0<=x[i])*ind_yr)/sum(ind_yr) }
+  return(Fkr)
+}
+
+MV<-function(Xk,Y) {
+  Fk0 <- Fk(Xk,Xk)
+  Yr <- unique(Y)
+  MVr <- c()
+  for (r in 1:length(Yr)) {
+    MVr[r] <- (sum(Y==Yr[r])/length(Y))*mean((Fkr(Xk,Y,Yr[r],Xk)-Fk0)^2)
+  }
+  MV <- sum(MVr)
+  return(MV)
+}
+
+
+
+screen_mv <- function(i,s,y)
+{return (abs(MV(Y=s[,i],Xk=y)))}
+
+a = Sys.time()
+score2 = sapply(c(1:as.numeric(dim(s)[2])),screen_ks,y=mid,s=s)
+res2 <- data.frame(screen=score2)
+b = Sys.time()
+print ("KF-M2")
+print (b-a)
+
+a = Sys.time()
+score3 = sapply(c(1:as.numeric(dim(s)[2])),screen_dc,y=mid,s=s)
+res3 <- data.frame(screen=score3)
+b = Sys.time()
+print ("DC-M2")
+print (b-a)
+
+a = Sys.time()
+score4 = sapply(c(1:as.numeric(dim(s)[2])),screen_mv,y=mid,s=s)
+res4 <- data.frame(screen=score4)
+b = Sys.time()
+print ("MV-M2")
+print (b-a)
+
+a = Sys.time()
+score5 = sapply(c(1:as.numeric(dim(s)[2])),screen_ks,y=three,s=s)
+res5 <- data.frame(screen=score5)
+b = Sys.time()
+print ("KF-M1")
+print (b-a)
+
+a = Sys.time()
+score6 = sapply(c(1:as.numeric(dim(s)[2])),screen_dc,y=three,s=s)
+res6 <- data.frame(screen=score6)
+b = Sys.time()
+print ("DC-M1")
+print (b-a)
+
+a = Sys.time()
+score7 = sapply(c(1:as.numeric(dim(s)[2])),screen_mv,y=three,s=s)
+res7 <- data.frame(screen=score7)
+b = Sys.time()
+print ("MV-M1")
+print (b-a)
+
+a = Sys.time()
+score8 = sapply(c(1:as.numeric(dim(s)[2])),screen_ks,y=six,s=s)
+res8 <- data.frame(screen=score8)
+b = Sys.time()
+print ("KF-M3")
+print (b-a)
+
+a = Sys.time()
+score9 = sapply(c(1:as.numeric(dim(s)[2])),screen_dc,y=six,s=s)
+res9 <- data.frame(screen=score9)
+b = Sys.time()
+print ("DC-M3")
+print (b-a)
+
+a = Sys.time()
+score10 = sapply(c(1:as.numeric(dim(s)[2])),screen_mv,y=six,s=s)
+res10 <- data.frame(screen=score10)
+b = Sys.time()
+print ("MV-M3")
+print (b-a)
+
+```
+ 
+
+
+
+
+
+## Model Fitting (Table 4 in Paper)
+```{r  warning=FALSE}
+fitting_prepare <- function(res,sub){
+  totno <- dim(s)[2]+ 1
+  ks <- data.frame(rank=totno-rank(res$screen),index=c(1:dim(s)[2] ))
+  x <- as.matrix(s[,ks[ks$rank<sub+1,]$index])
+  data <- data.frame(l=l,r=r,sapply(c(1:dim(x)[2]),function(i) x[,i]))
+  return (data)
+  
+}
+
+model_fitting <- function(data,dis) {
+  dt_tmp <- data[3:ncol(data)]
+  if (dis == "weibull"){
+    dt_tmp$l = data$l
+    dt_tmp$r = data$r
+    total <- dim(data)[2] - 2
+    xkk = paste("X", 1:total, sep = "",collapse="+")
+    model <- survreg(as.formula(paste("Surv(l,r,type='interval2')",
+                                      xkk,sep="~")),data=dt_tmp,dist=dis)
+    scsc <- model$loglik
+    ress <- c(scsc[2],2*(scsc[2]-scsc[1]))
+  }
+  else {
+    dt_tmp$l = log(data$l)
+    dt_tmp$r = log(data$r)
+    total <- dim(data)[2] - 2
+    xkk = paste("X", 1:total, sep = "",collapse="+")
+    model <- survreg(as.formula(paste("Surv(l,r,type='interval2')",
+                                      xkk,sep="~")),data=dt_tmp,dist=dis)
+    scsc <- model$loglik
+    ress <- c(scsc[2],2*(scsc[2]-scsc[1]))}
+  return (ress)
+}
+```
+
+```{r  warning=FALSE}
+print ("gaussian")
+fittingGaussian = data.frame(rbind(model_fitting(fitting_prepare(res1,60),"gaussian"),
+      model_fitting(fitting_prepare(res5,60),"gaussian"),
+      model_fitting(fitting_prepare(res6,60),"gaussian"),
+      model_fitting(fitting_prepare(res7,60),"gaussian"),
+      model_fitting(fitting_prepare(res2,60),"gaussian"),
+      model_fitting(fitting_prepare(res3,60),"gaussian"),
+      model_fitting(fitting_prepare(res4,60),"gaussian"),
+      model_fitting(fitting_prepare(res8,60),"gaussian"),
+      model_fitting(fitting_prepare(res9,60),"gaussian"),
+       model_fitting(fitting_prepare(res10,60),"gaussian")))
+row.names(fittingGaussian) <- c("ADD-SIS","KS-Filter-M1","DC-SIS-M1","MV-SIS-M1",
+                       "KS-Filter-M2","DC-SIS-M2","MV-SIS-M2",
+                       "KS-Filter-M3","DC-SIS-M3","MV-SIS-M3")
+print (fittingGaussian)
+```
+
+```{r  warning=FALSE}
+print ("logistic")
+fittingLogistic = data.frame(rbind(model_fitting(fitting_prepare(res1,60),"logistic"),
+      model_fitting(fitting_prepare(res5,60),"logistic"),
+      model_fitting(fitting_prepare(res6,60),"logistic"),
+      model_fitting(fitting_prepare(res7,60),"logistic"),
+      model_fitting(fitting_prepare(res2,60),"logistic"),
+      model_fitting(fitting_prepare(res3,60),"logistic"),
+      model_fitting(fitting_prepare(res4,60),"logistic"),
+      model_fitting(fitting_prepare(res8,60),"logistic"),
+      model_fitting(fitting_prepare(res9,60),"logistic"),
+      model_fitting(fitting_prepare(res10,60),"logistic")))
+row.names(fittingLogistic) <- c("ADD-SIS","KS-Filter-M1","DC-SIS-M1","MV-SIS-M1",
+                       "KS-Filter-M2","DC-SIS-M2","MV-SIS-M2",
+                       "KS-Filter-M3","DC-SIS-M3","MV-SIS-M3")
+print (fittingLogistic)
+```
+
+```{r  warning=FALSE}
+print ("weibull")
+fittingWeibull = data.frame(rbind(model_fitting(fitting_prepare(res1,60),"weibull"),
+      model_fitting(fitting_prepare(res5,60),"weibull"),
+      model_fitting(fitting_prepare(res6,60),"weibull"),
+      model_fitting(fitting_prepare(res7,60),"weibull"),
+      model_fitting(fitting_prepare(res2,60),"weibull"),
+      model_fitting(fitting_prepare(res3,60),"weibull"),
+      model_fitting(fitting_prepare(res4,60),"weibull"),
+      model_fitting(fitting_prepare(res8,60),"weibull"),
+      model_fitting(fitting_prepare(res9,60),"weibull"),
+      model_fitting(fitting_prepare(res10,60),"weibull")))
+row.names(fittingWeibull) <- c("ADD-SIS","KS-Filter-M1","DC-SIS-M1","MV-SIS-M1",
+                       "KS-Filter-M2","DC-SIS-M2","MV-SIS-M2",
+                       "KS-Filter-M3","DC-SIS-M3","MV-SIS-M3")
+print (fittingWeibull)
+```
+
+
+
+## Method Generalization Comparison with LOO (Table 6 in Paper)
+```{r  warning=FALSE}
+get_data <- function(res,sub){
+  totno <- dim(s)[2]
+  ks <- data.frame(rank=totno-rank(res$screen),index=c(1:dim(s)[2] ))
+  x <- as.matrix(s[,ks[ks$rank<sub+1,]$index])
+  data <- data.frame(l=l,r=r,sapply(c(1:dim(x)[2]),function(i) x[,i]))
+  return (data)
+  
+}
+
+cv <- function(data,no,dis) {
+  l = data$l
+  r = data$r
+  every <- data[-no,]
+  total <- dim(data)[2] - 2
+  xkk = paste("X", 1:total, sep = "",collapse="+")
+  model <- survreg(as.formula(paste("Surv(l,r,type='interval2')",xkk,sep="~")),data=every,dist=dis)
+  return (as.numeric(predict(model,newdata = data[no,][3:dim(data)[2]])))
+}
+
+iter <-function(number,dis)
+{
+  sub = number
+  print (sub)
+  data11 <- get_data(res1,sub)
+  data11$l = data11$l
+  data11$r = data11$r
+  data12 <- get_data(res2,sub)
+  data13 <- get_data(res3,sub)
+  data14 <- get_data(res4,sub)
+  data15 <- get_data(res5,sub)
+  data16 <- get_data(res6,sub)
+  data17 <- get_data(res7,sub)
+  data18 <- get_data(res8,sub)
+  data19 <- get_data(res9,sub)
+  data110 <- get_data(res10,sub)
+  pre11 <- sapply(c(1:dim(data11)[1]),cv,data=data11,dis=dis)
+  pre12 <- sapply(c(1:dim(data12)[1]),cv,data=data12,dis=dis)
+  pre13 <- sapply(c(1:dim(data13)[1]),cv,data=data13,dis=dis)
+  pre14 <- sapply(c(1:dim(data14)[1]),cv,data=data14,dis=dis)
+  pre15 <- sapply(c(1:dim(data12)[1]),cv,data=data15,dis=dis)
+  pre16 <- sapply(c(1:dim(data13)[1]),cv,data=data16,dis=dis)
+  pre17 <- sapply(c(1:dim(data14)[1]),cv,data=data17,dis=dis)
+  pre18 <- sapply(c(1:dim(data12)[1]),cv,data=data18,dis=dis)
+  pre19 <- sapply(c(1:dim(data13)[1]),cv,data=data19,dis=dis)
+  pre110 <- sapply(c(1:dim(data14)[1]),cv,data=data110,dis=dis)
+  return (data.frame(x1=pre11,x2=pre12,x3=pre13,x4=pre14,
+                     x5=pre15,x6=pre16,x7=pre17,
+                     x8=pre18,x9=pre19,x10=pre110))
+  
+  
+  
+}
+
+
+
+
+res_tmp1 <- iter(60,'gaussian')
+res_tmp2 <- iter(60,'logistic')
+res_tmp3 <- iter(60,'weibull')
+```
+
+```{r  warning=FALSE}
+dt <-read.csv(paste(root_path,"/WordMatrix_Filter.csv",sep=""))
+REAL_TEST = subset(dt, select = -c(X) )
+
+l = as.numeric(REAL_TEST$l) 
+r =  as.numeric(REAL_TEST$r) 
+est <- EMICM(cbind(l,r))
+est_pdf<- data.frame(cbind(t(est$intmap),est$pf))
+npmle_pdf <- bind_rows(lapply(c(1:dim(est_pdf)[1]),int_split,df=est_pdf))
+
+supreme_test <- function(x,ecdf,npmle){
+  abs(sum(npmle[3][x<npmle[1]]) - mean(x<ecdf))
+}
+
+cvm_test <- function(x,ecdf,npmle){
+  abs(sum(npmle[3][x<npmle[1]]) - mean(x<ecdf))**2
+}
+
+add_test <- function(x,ecdf,npmle){
+  abs(sum(npmle[3][x<npmle[1]]) - mean(x<ecdf))
+}
+
+
+loo_com_method <- function(res_tmp){
+  s1 <- c(max(sapply(c(res_tmp$x1,unique(c(est_pdf$X1,est_pdf$X2))),
+                     supreme_test ,ecdf = res_tmp$x1,npmle=npmle_pdf)),
+          max(sapply(c(res_tmp$x2,unique(c(est_pdf$X1,est_pdf$X2))),
+                     supreme_test ,ecdf = res_tmp$x2,npmle=npmle_pdf)),
+          max(sapply(c(res_tmp$x3,unique(c(est_pdf$X1,est_pdf$X2))),
+                     supreme_test ,ecdf = res_tmp$x3,npmle=npmle_pdf)),
+          max(sapply(c(res_tmp$x4,unique(c(est_pdf$X1,est_pdf$X2))),
+                     supreme_test ,ecdf = res_tmp$x4,npmle=npmle_pdf)),
+          max(sapply(c(res_tmp$x5,unique(c(est_pdf$X1,est_pdf$X2))),
+                     supreme_test ,ecdf = res_tmp$x5,npmle=npmle_pdf)),
+          max(sapply(c(res_tmp$x6,unique(c(est_pdf$X1,est_pdf$X2))),
+                     supreme_test ,ecdf = res_tmp$x6,npmle=npmle_pdf)),
+          max(sapply(c(res_tmp$x7,unique(c(est_pdf$X1,est_pdf$X2))),
+                     supreme_test ,ecdf = res_tmp$x7,npmle=npmle_pdf)),
+          max(sapply(c(res_tmp$x8,unique(c(est_pdf$X1,est_pdf$X2))),
+                     supreme_test ,ecdf = res_tmp$x8,npmle=npmle_pdf)),
+          max(sapply(c(res_tmp$x9,unique(c(est_pdf$X1,est_pdf$X2))),
+                     supreme_test ,ecdf = res_tmp$x9,npmle=npmle_pdf)),
+          max(sapply(c(res_tmp$x10,unique(c(est_pdf$X1,est_pdf$X2))),
+                     supreme_test ,ecdf = res_tmp$x10,npmle=npmle_pdf)))
+  r2 <- length(res_tmp$x1) * length(unique(c(est_pdf$X1,est_pdf$X2)))/(length(res_tmp$x1) + length(unique(c(est_pdf$X1,est_pdf$X2))))
+  s2 <- r2 * c(mean(sapply(c(res_tmp$x1,unique(c(est_pdf$X1,est_pdf$X2))),
+                           cvm_test ,ecdf = res_tmp$x1,npmle=npmle_pdf)),
+               mean(sapply(c(res_tmp$x2,unique(c(est_pdf$X1,est_pdf$X2))),
+                           cvm_test ,ecdf = res_tmp$x2,npmle=npmle_pdf)),
+               mean(sapply(c(res_tmp$x3,unique(c(est_pdf$X1,est_pdf$X2))),
+                           cvm_test ,ecdf = res_tmp$x3,npmle=npmle_pdf)),
+               mean(sapply(c(res_tmp$x4,unique(c(est_pdf$X1,est_pdf$X2))),
+                           cvm_test ,ecdf = res_tmp$x4,npmle=npmle_pdf)),
+               mean(sapply(c(res_tmp$x5,unique(c(est_pdf$X1,est_pdf$X2))),
+                           cvm_test ,ecdf = res_tmp$x5,npmle=npmle_pdf)),
+               mean(sapply(c(res_tmp$x6,unique(c(est_pdf$X1,est_pdf$X2))),
+                           cvm_test ,ecdf = res_tmp$x6,npmle=npmle_pdf)),
+               mean(sapply(c(res_tmp$x7,unique(c(est_pdf$X1,est_pdf$X2))),
+                           cvm_test ,ecdf = res_tmp$x7,npmle=npmle_pdf)),
+               mean(sapply(c(res_tmp$x8,unique(c(est_pdf$X1,est_pdf$X2))),
+                           cvm_test ,ecdf = res_tmp$x8,npmle=npmle_pdf)),
+               mean(sapply(c(res_tmp$x9,unique(c(est_pdf$X1,est_pdf$X2))),
+                           cvm_test ,ecdf = res_tmp$x9,npmle=npmle_pdf)),
+               mean(sapply(c(res_tmp$x10,unique(c(est_pdf$X1,est_pdf$X2))),
+                           cvm_test ,ecdf = res_tmp$x10,npmle=npmle_pdf)))
+  
+  ress <- data.frame(ks=s1,
+                     cvm=s2
+                     )
+  row.names(ress) <- c("ADD-SIS","KS-Filter-M2","DC-SIS-M2","MV-SIS-M2",
+                       "KS-Filter-M1","DC-SIS-M1","MV-SIS-M1",
+                       "KS-Filter-M3","DC-SIS-M3","MV-SIS-M3")
+  return (ress)
+}
+print ("Gaussian")
+loo_com_method(res_tmp1)
+print ("Logistic")
+loo_com_method(res_tmp2)
+print ("Weilbull")
+loo_com_method(res_tmp3)
+
+
+```
+
+
+
+
+##  Method Generalization Comparison with LOO --- Overlap Area (Table 6 in Paper)
+```{r  warning=FALSE}
+dt <- read.csv(paste(root_path,"WordMatrix_Filter.csv",sep=""))
+REAL_TEST = subset(dt, select = -c(X1) )
+
+l = as.numeric(REAL_TEST$l) 
+r =  as.numeric(REAL_TEST$r) 
+
+get_data2 <- function(res,sub){
+  totno <- dim(s)[2]
+  ks <- data.frame(rank=totno-rank(res$screen),index=c(1:dim(s)[2] ))
+  x <- as.matrix(s[,ks[ks$rank<sub+1,]$index])
+  data <- data.frame(l=l,r=r,sapply(c(1:dim(x)[2]),function(i) x[,i]))
+  return (data)
+  
+}
+
+cv2 <- function(data,no,dis) {
+  every <- data[-no,]
+  total <- dim(data)[2] - 2
+  xkk = paste("X", 1:total, sep = "",collapse="+")
+  model <- survreg(as.formula(paste("Surv(l,r,type='interval2')",xkk,sep="~")),data=every,dist=dis)
+  return (as.numeric((predict(model,newdata = data[no,][3:dim(data)[2]],
+                             type="quantile",p=c(0.025,0.975)))))
+}
+
+cv_ <- function(data,no,dis) {
+  data$l = log(data$l)
+  data$r = log(data$r)
+  every <- data[-no,]
+  total <- dim(data)[2] - 2
+  xkk = paste("X", 1:total, sep = "",collapse="+")
+  model <- survreg(as.formula(paste("Surv(l,r,type='interval2')",xkk,sep="~")),data=every,dist=dis)
+  return (as.numeric(exp(predict(model,newdata = data[no,][3:dim(data)[2]],
+                             type="quantile",p=c(0.025,0.975)))))
+}
+
+overlap1 <- function(a,b,d,e){
+  if (d>b){overlap_value=0}
+  else if (e<a) {overlap_value = 0}
+  else {based =  c(a,b,d,e)
+    tmp = rank(c(a,b,d,e))
+    overlap_value = ((based[tmp==3]) - (based[tmp==2]))/(e-d)}
+  return (overlap_value)
+}
+
+
+overlap2 <- function(a,b,d,e){
+  if (d>b){overlap_value=0}
+  else if (e<a) {overlap_value = 0}
+  else {based =  c(a,b,d,e)
+    tmp = rank(c(a,b,d,e))
+    overlap_value = ((based[tmp==3]) - (based[tmp==2]))/(b-a)}
+  return (overlap_value)
+}
+
+
+
+iter_precision <-function(number,dis)
+{
+  sub = number
+  print (sub)
+  data11 <- get_data2(res1,sub)
+  data12 <- get_data(res2,sub)
+  data13 <- get_data(res3,sub)
+  data14 <- get_data(res4,sub)
+  data15 <- get_data(res5,sub)
+  data16 <- get_data(res6,sub)
+  data17 <- get_data(res7,sub)
+  data18 <- get_data(res8,sub)
+  data19 <- get_data(res9,sub)
+  data110 <- get_data(res10,sub)
+  pre11 <- sapply(c(1:dim(data11)[1]),cv2,data=data11,dis=dis)
+  pre12 <- sapply(c(1:dim(data12)[1]),cv2,data=data12,dis=dis)
+  pre13 <- sapply(c(1:dim(data13)[1]),cv2,data=data13,dis=dis)
+  pre14 <- sapply(c(1:dim(data14)[1]),cv2,data=data14,dis=dis)
+  pre15 <- sapply(c(1:dim(data15)[1]),cv2,data=data15,dis=dis)
+  pre16 <- sapply(c(1:dim(data16)[1]),cv2,data=data16,dis=dis)
+  pre17 <- sapply(c(1:dim(data17)[1]),cv2,data=data17,dis=dis)
+  pre18 <- sapply(c(1:dim(data18)[1]),cv2,data=data18,dis=dis)
+  pre19 <- sapply(c(1:dim(data19)[1]),cv2,data=data19,dis=dis)
+  pre110 <- sapply(c(1:dim(data110)[1]),cv2,data=data110,dis=dis)
+  
+  s1 <- mean(sapply(c(1:497),function(no){overlap1(a=l[no],b=r[no],d=pre11[,no][1],e=pre11[,no][2])}))
+  s2 <- mean(sapply(c(1:497),function(no){overlap1(a=l[no],b=r[no],d=pre12[,no][1],e=pre12[,no][2])}))
+  s3 <- mean(sapply(c(1:497),function(no){overlap1(a=l[no],b=r[no],d=pre13[,no][1],e=pre13[,no][2])}))
+  s4 <- mean(sapply(c(1:497),function(no){overlap1(a=l[no],b=r[no],d=pre14[,no][1],e=pre14[,no][2])}))
+  s5 <- mean(sapply(c(1:497),function(no){overlap1(a=l[no],b=r[no],d=pre15[,no][1],e=pre15[,no][2])}))
+  s6 <- mean(sapply(c(1:497),function(no){overlap1(a=l[no],b=r[no],d=pre16[,no][1],e=pre16[,no][2])}))
+  s7 <- mean(sapply(c(1:497),function(no){overlap1(a=l[no],b=r[no],d=pre17[,no][1],e=pre17[,no][2])}))
+  s8 <- mean(sapply(c(1:497),function(no){overlap1(a=l[no],b=r[no],d=pre18[,no][1],e=pre18[,no][2])}))
+  s9 <- mean(sapply(c(1:497),function(no){overlap1(a=l[no],b=r[no],d=pre19[,no][1],e=pre19[,no][2])}))
+  s10 <- mean(sapply(c(1:497),function(no){overlap1(a=l[no],b=r[no],d=pre110[,no][1],e=pre110[,no][2])}))
+  return(c(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10))
+  
+}
+print ("Precision Score")
+print ("Gaussian Quantile Overlap")
+pre_gauss = iter_precision(60,'gaussian')
+print ("Logistic Quantile Overlap")
+pre_logic = iter_precision(60,'logistic')
+print ("Weilbull Quantile Overlap")
+pre_weibull = iter_precision(60,'weibull')
+```
+
+
+
+
+```{r  warning=FALSE}
+iter_recall <-function(number,dis)
+{
+  sub = number
+  print (sub)
+  data11 <- get_data2(res1,sub)
+  data12 <- get_data(res2,sub)
+  data13 <- get_data(res3,sub)
+  data14 <- get_data(res4,sub)
+  data15 <- get_data(res5,sub)
+  data16 <- get_data(res6,sub)
+  data17 <- get_data(res7,sub)
+  data18 <- get_data(res8,sub)
+  data19 <- get_data(res9,sub)
+  data110 <- get_data(res10,sub)
+  pre11 <- sapply(c(1:dim(data11)[1]),cv_,data=data11,dis=dis)
+  pre12 <- sapply(c(1:dim(data12)[1]),cv2,data=data12,dis=dis)
+  pre13 <- sapply(c(1:dim(data13)[1]),cv2,data=data13,dis=dis)
+  pre14 <- sapply(c(1:dim(data14)[1]),cv2,data=data14,dis=dis)
+  pre15 <- sapply(c(1:dim(data15)[1]),cv2,data=data15,dis=dis)
+  pre16 <- sapply(c(1:dim(data16)[1]),cv2,data=data16,dis=dis)
+  pre17 <- sapply(c(1:dim(data17)[1]),cv2,data=data17,dis=dis)
+  pre18 <- sapply(c(1:dim(data18)[1]),cv2,data=data18,dis=dis)
+  pre19 <- sapply(c(1:dim(data19)[1]),cv2,data=data19,dis=dis)
+  pre110 <- sapply(c(1:dim(data110)[1]),cv2,data=data110,dis=dis)
+  s1 <- mean(sapply(c(1:497),function(no){overlap2(a=l[no],b=r[no],d=pre11[,no][1],e=pre11[,no][2])}))
+  s2 <- mean(sapply(c(1:497),function(no){overlap2(a=l[no],b=r[no],d=pre12[,no][1],e=pre12[,no][2])}))
+  s3 <- mean(sapply(c(1:497),function(no){overlap2(a=l[no],b=r[no],d=pre13[,no][1],e=pre13[,no][2])}))
+  s4 <- mean(sapply(c(1:497),function(no){overlap2(a=l[no],b=r[no],d=pre14[,no][1],e=pre14[,no][2])}))
+  s5 <- mean(sapply(c(1:497),function(no){overlap2(a=l[no],b=r[no],d=pre15[,no][1],e=pre15[,no][2])}))
+  s6 <- mean(sapply(c(1:497),function(no){overlap2(a=l[no],b=r[no],d=pre16[,no][1],e=pre16[,no][2])}))
+  s7 <- mean(sapply(c(1:497),function(no){overlap2(a=l[no],b=r[no],d=pre17[,no][1],e=pre17[,no][2])}))
+  s8 <- mean(sapply(c(1:497),function(no){overlap2(a=l[no],b=r[no],d=pre18[,no][1],e=pre18[,no][2])}))
+  s9 <- mean(sapply(c(1:497),function(no){overlap2(a=l[no],b=r[no],d=pre19[,no][1],e=pre19[,no][2])}))
+  s10 <- mean(sapply(c(1:497),function(no){overlap2(a=l[no],b=r[no],d=pre110[,no][1],e=pre110[,no][2])}))
+  return(c(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10))
+  
+}
+print ("Recall Score")
+print ("Gaussian Quantile Overlap")
+rec_gauss = iter_recall(60,'gaussian')
+print ("Logistic Quantile Overlap")
+rec_logic= iter_recall(60,'logistic')
+print ("Weilbull Quantile Overlap")
+rec_weibull = iter_recall(60,'weibull')
+```
+
+```{r  warning=FALSE}
+
+print ("Gaussian Results")
+ress_gauss <- data.frame(recall=rec_gauss,
+                     precision=pre_gauss,
+                     f1 = 2*rec_gauss*pre_gauss/(rec_gauss+pre_gauss)
+                     )
+row.names(ress_gauss) <- c("ADD-SIS","KS-Filter-M2","DC-SIS-M2","MV-SIS-M2",
+                       "KS-Filter-M1","DC-SIS-M1","MV-SIS-M1",
+                       "KS-Filter-M3","DC-SIS-M3","MV-SIS-M3")
+print (ress_gauss)
+```
+
+
+```{r  warning=FALSE}
+
+print ("Logistic Results")
+ress_logic <- data.frame(recall=rec_logic,
+                     precision=pre_logic,
+                     f1 = 2*rec_logic*pre_logic/(rec_logic+pre_logic)
+                     )
+row.names(ress_logic) <- c("ADD-SIS","KS-Filter-M2","DC-SIS-M2","MV-SIS-M2",
+                       "KS-Filter-M1","DC-SIS-M1","MV-SIS-M1",
+                       "KS-Filter-M3","DC-SIS-M3","MV-SIS-M3")
+print (ress_logic)
+```
+
+```{r  warning=FALSE}
+
+print ("Weibull Results")
+ress_weibull <- data.frame(recall=rec_weibull,
+                     precision=pre_weibull,
+                     f1 = 2*rec_weibull*pre_weibull/(rec_weibull+pre_weibull)
+                     )
+row.names(ress_weibull) <- c("ADD-SIS","KS-Filter-M2","DC-SIS-M2","MV-SIS-M2",
+                       "KS-Filter-M1","DC-SIS-M1","MV-SIS-M1",
+                       "KS-Filter-M3","DC-SIS-M3","MV-SIS-M3")
+print (ress_weibull)
+```
+
+## Different Number of Covariates Comparison with LOO (Table 5 and Figure 4 in Paper)
+
+
+
+```{r  warning=FALSE}
+data_tmp1 <- get_data(res1,30)
+data_tmp2 <- get_data(res1,60)
+data_tmp3 <- get_data(res1,120)
+pre_1 <- sapply(c(1:dim(data_tmp1)[1]),cv,data=data_tmp1,dis="gaussian")
+pre_2 <- sapply(c(1:dim(data_tmp2)[1]),cv,data=data_tmp2,dis="gaussian")
+pre_3 <- sapply(c(1:dim(data_tmp3)[1]),cv,data=data_tmp3,dis="gaussian")
+
+
+
+
+
+
+
+par(mfrow=c(1,3))
+plot(EMICM(cbind(l,r)),type='gw',lty=1,col="red",lwd=5,main=paste("d =",expression(30)),
+     cex.main=1.25,cex.axis=1.25,xlab='Salary',pch=20)
+lines(ecdf(pre_1),col='blue',lty=1,lwd=1,pch = 20)
+plot(EMICM(cbind(l,r)),type='gw',main=paste("d =",expression(60)),cex.main=1.25,
+     cex.axis=1.25,xlab='Salary')
+lines(ecdf(pre_2),col='blue',lty=1,lwd=1,pch = 20)
+plot(EMICM(cbind(l,r)),type='gw',main=paste("d =",expression(120)),cex.main=1.25,cex.axis=1.25,xlab='Salary')
+lines(ecdf(pre_3),col='blue',lty=1,lwd=1,pch = 20)
+
+generalization_com <- function(pre,est_pdf){
+  s1 <- max(sapply(c(pre,unique(c(est_pdf$X1,est_pdf$X2))),
+                   supreme_test ,ecdf = pre,npmle=npmle_pdf))
+  r2  <- length(pre)*length(unique(c(est_pdf$X1,est_pdf$X2))) / (length(pre) + length(unique(c(est_pdf$X1,est_pdf$X2))))
+  s2 <- mean(sapply(c(pre,unique(c(est_pdf$X1,est_pdf$X2))),cvm_test ,ecdf = pre,npmle=npmle_pdf))
+  
+  return(c(s1,r2*s2)) }
+print (rbind(generalization_com(pre_1,est_pdf = est_pdf),
+      generalization_com(pre_2,est_pdf = est_pdf),
+      generalization_com(pre_3,est_pdf = est_pdf)))
+
+
+```

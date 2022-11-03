@@ -1,0 +1,159 @@
+---
+title: "TableS.2"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+library(Icens)
+library(interval)
+library(MASS)
+library(dplyr)
+library(energy)
+
+int_split <- function(i,df){
+  tmp1 <- as.numeric(df[i,][1])
+  tmp2 <- as.numeric(df[i,][2])
+  if (is.infinite(tmp1)) {start<- tmp2-1}
+  else {start <- as.numeric(df[i,][1])}
+  if (is.infinite(tmp2)) {end <- tmp1+1}
+  else {end <- as.numeric(df[i,][2])}
+  
+  difs <- as.numeric(end-start-1)
+  
+  return (data.frame(cbind(start+c(0:difs),start+1+c(0:difs),rep(df[i,][3]/(difs+1),difs+1))))
+}
+transs <- function(df){
+  dff <- df$X2-df$X1
+  subs <- df[dff==1,c('X1','X2','X3')]  
+  no <- which(dff!=1)
+  if (length(no)==0) {res <- subs}
+  else if (length(no)==1) {res <- data.frame(rbind(subs,int_split(no[1],df=df)))
+  res$X1 <- as.numeric(res$X1)
+  res$X2 <- as.numeric(res$X2)
+  res$X3 <- as.numeric(res$X3)}
+  else if (length(no)>=2) {ress <- data.frame(rbind(subs,int_split(no[1],df=df)))
+  res <- data.frame(rbind(ress,int_split(no[2],df=df)))
+  res$X1 <- as.numeric(res$X1)
+  res$X2 <- as.numeric(res$X2)
+  res$X3 <- as.numeric(res$X3)
+  }
+  return (res)
+}
+
+
+
+
+
+
+
+
+
+
+Simu_Multi_Norm<-function(x_len, sd = sd, pho =pho){
+  #初始化协方差矩阵
+  V <- matrix(data = NA, nrow = x_len, ncol = x_len)
+  
+  #mean及sd分别为随机向量x的均值和方差
+  
+  #对协方差矩阵进行赋值pho(i,j) = pho^|i-j|
+  for(i in 1:x_len){ ##遍历每一行
+    for(j in 1:x_len){ ##遍历每一列
+      V[i,j] <- pho^abs(i-j)
+    }
+  }
+  
+  V<-(sd^2) * V
+  return(V)
+}
+sigma1 <- Simu_Multi_Norm(x_len = 1000,sd  = 1, pho = 0.2)
+#sigma2 <- Simu_Multi_Norm(x_len = 1000,sd  = 1, pho = 0.5)
+#sigma3 <- Simu_Multi_Norm(x_len = 1000,sd  = 1, pho = 0.8)
+simu_dis1 <- function(no){
+  set.seed(no)
+  nn = 200
+  pp = sigma1
+  rat = 0.3
+  x <-mvrnorm(nn, mu = rep(0,1000),pp)
+  s <- x>0
+  prob <- 0.2
+  #beta =  c(c(0.5,0.5,0.5,0.5,0.5),rep(0,995))
+  beta = c(c(1,0.8,0.6),rep(0,15),c(-0.6,-0.8),rep(0,980))
+  lambda <- (s %*% beta)
+  y <- rpois(n=nn,exp(lambda))
+  l = y-rpois(n=nn,2)-1
+  r = y+2*floor(rchisq(df=3,n=nn))+1
+  tot <- prob*nn
+  nos <- sample(c(1:nn),size=tot)
+  tt <- rat*(prob*nn)
+  r[nos[1:tt]] <- Inf
+  l[nos[tt+1:tot]] <- -Inf
+  
+  truth <- sapply( c(0:max(y)), function(x){mean(y<=x)})
+  naive <- sapply( c(0:max(y)), function(x){mean(c(l,r)<=x)})
+  npmle <- EMICM(cbind(l,r))
+  kk<-data.frame(cbind(t(npmle$intmap),npmle$pf))
+  tmp =data.frame(X1=c(0:as.numeric(max(y))),X2=c(1:as.numeric(max(y)+1)))
+  tmp_ = merge(tmp,kk,all.x = TRUE)
+  tmp_[is.na(tmp_)] = 0
+  npmle_cdf = cumsum(tmp_$X3)
+  cvm1 = length(truth)*length(npmle_cdf)/(length(npmle_cdf)+length(npmle_cdf))**2*sum(abs(truth - npmle_cdf)**2)
+  cvm2 = length(truth)*length(naive)/(length(naive)+length(truth))**2*sum(abs(truth -naive)**2)
+  s1 <- c(max(abs(truth - npmle_cdf)),cvm1)
+  s2 <- c(max(abs(truth - naive)),cvm2)
+  return (c(s1,s2))}
+
+simu_dis2 <- function(no){
+  set.seed(no)
+  nn = 200
+  pp = sigma1
+  rat = 0.3
+  x <-mvrnorm(nn, mu = rep(0,1000),pp)
+  s <- x>0
+  prob <- 0.2
+  #beta =  c(c(0.5,0.5,0.5,0.5,0.5),rep(0,995))
+  beta = c(c(1,0.8,0.6),rep(0,15),c(-0.6,-0.8),rep(0,980))
+  lambda <- (s %*% beta)
+  y <- rpois(n=nn,exp(lambda))
+  l = y-2*rpois(n=nn,2)-1
+  r = y+4*floor(rchisq(df=3,n=nn))+1
+  tot <- prob*nn
+  nos <- sample(c(1:nn),size=tot)
+  tt <- rat*(prob*nn)
+  r[nos[1:tt]] <- Inf
+  l[nos[tt+1:tot]] <- -Inf
+  
+  truth <- sapply( c(0:max(y)), function(x){mean(y<=x)})
+  naive <- sapply( c(0:max(y)), function(x){mean(c(l,r)<=x)})
+  npmle <- EMICM(cbind(l,r))
+  kk<-data.frame(cbind(t(npmle$intmap),npmle$pf))
+  tmp =data.frame(X1=c(0:as.numeric(max(y))),X2=c(1:as.numeric(max(y)+1)))
+  tmp_ = merge(tmp,kk,all.x = TRUE)
+  tmp_[is.na(tmp_)] = 0
+  npmle_cdf = cumsum(tmp_$X3)
+  cvm1 = length(truth)*length(npmle_cdf)/(length(npmle_cdf)+length(npmle_cdf))**2*sum(abs(truth - npmle_cdf)**2)
+  cvm2 = length(truth)*length(naive)/(length(naive)+length(truth))**2*sum(abs(truth -naive)**2)
+  s1 <- c(max(abs(truth - npmle_cdf)),cvm1)
+  s2 <- c(max(abs(truth - naive)),cvm2)
+  return (c(s1,s2))}
+
+```
+
+# Simulation (1)
+```{r}
+total_size = 100
+distance1 <- sapply(c(1:total_size),function(no){simu_dis1(no)})
+write.csv(distance1,"../Intermediate/simulation1.csv")
+```
+
+
+# Simulation (2)
+```{r}
+total_size = 100
+distance1 <- sapply(c(1:total_size),function(no){simu_dis2(no)})
+write.csv(distance1,"../Intermediate/simulation2.csv")
+```

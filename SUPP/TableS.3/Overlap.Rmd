@@ -1,0 +1,65 @@
+---
+title: "Overlap_Analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+dt = read.csv("Ranking.csv")
+matrix = read.csv("../../CaseStudy/Data/WordMatrix_Filter.csv")
+freq = sapply(c(2:678),function(no){sum(unlist(matrix[no]))})
+words = read.csv("../../CaseStudy/Data/Word_Filter.csv")
+words$freq= freq
+```
+
+# d= 30
+```{r}
+overlap_proportion = c(length(intersect(c(1:678)[(678-rank(dt$screen))<31],c(1:678)[(678-rank(dt$screen.1))<31]))/30,
+length(intersect(c(1:678)[(678-rank(dt$screen))<31],c(1:678)[(678-rank(dt$screen.2))<31]))/30,
+length(intersect(c(1:678)[(678-rank(dt$screen))<31],c(1:678)[(678-rank(dt$screen.3))<31]))/30,
+length(intersect(c(1:678)[(678-rank(dt$screen))<31],c(1:678)[(678-rank(dt$screen.4))<31]))/30,
+length(intersect(c(1:678)[(678-rank(dt$screen))<31],c(1:678)[(678-rank(dt$screen.5))<31]))/30,
+length(intersect(c(1:678)[(678-rank(dt$screen))<31],c(1:678)[(678-rank(dt$screen.6))<31]))/30,
+length(intersect(c(1:678)[(678-rank(dt$screen))<31],c(1:678)[(678-rank(dt$screen.7))<31]))/30,
+length(intersect(c(1:678)[(678-rank(dt$screen))<31],c(1:678)[(678-rank(dt$screen.8))<31]))/30,
+length(intersect(c(1:678)[(678-rank(dt$screen))<31],c(1:678)[(678-rank(dt$screen.9))<31]))/30)
+names = c("KF-M1","DCSIS-M1","MVSIS-M1","KF-M2","DCSIS-M2","MVSIS-M2","KF-M3","DCSIS-M3","MVSIS-M3")
+print (as.data.frame(overlap_proportion,row.names=names))
+```
+
+
+
+
+
+# d= 60
+```{r}
+overlap_proportion = c(length(intersect(c(1:678)[(678-rank(dt$screen))<61],c(1:678)[(678-rank(dt$screen.1))<61]))/60,
+length(intersect(c(1:678)[(678-rank(dt$screen))<61],c(1:678)[(678-rank(dt$screen.2))<61]))/60,
+length(intersect(c(1:678)[(678-rank(dt$screen))<61],c(1:678)[(678-rank(dt$screen.3))<61]))/60,
+length(intersect(c(1:678)[(678-rank(dt$screen))<61],c(1:678)[(678-rank(dt$screen.4))<61]))/60,
+length(intersect(c(1:678)[(678-rank(dt$screen))<61],c(1:678)[(678-rank(dt$screen.5))<61]))/60,
+length(intersect(c(1:678)[(678-rank(dt$screen))<61],c(1:678)[(678-rank(dt$screen.6))<61]))/60,
+length(intersect(c(1:678)[(678-rank(dt$screen))<61],c(1:678)[(678-rank(dt$screen.7))<61]))/60,
+length(intersect(c(1:678)[(678-rank(dt$screen))<61],c(1:678)[(678-rank(dt$screen.8))<61]))/60,
+length(intersect(c(1:678)[(678-rank(dt$screen))<61],c(1:678)[(678-rank(dt$screen.9))<61]))/60)
+names = c("KF-M1","DCSIS-M1","MVSIS-M1","KF-M2","DCSIS-M2","MVSIS-M2","KF-M3","DCSIS-M3","MVSIS-M3")
+print (as.data.frame(overlap_proportion,row.names=names))
+```
+
+
+# d= 120
+```{r}
+overlap_proportion = c(length(intersect(c(1:678)[(678-rank(dt$screen))<121],c(1:678)[(678-rank(dt$screen.1))<121]))/120,
+length(intersect(c(1:678)[(678-rank(dt$screen))<121],c(1:678)[(678-rank(dt$screen.2))<121]))/120,
+length(intersect(c(1:678)[(678-rank(dt$screen))<121],c(1:678)[(678-rank(dt$screen.3))<121]))/120,
+length(intersect(c(1:678)[(678-rank(dt$screen))<121],c(1:678)[(678-rank(dt$screen.4))<121]))/120,
+length(intersect(c(1:678)[(678-rank(dt$screen))<121],c(1:678)[(678-rank(dt$screen.5))<121]))/120,
+length(intersect(c(1:678)[(678-rank(dt$screen))<121],c(1:678)[(678-rank(dt$screen.6))<121]))/120,
+length(intersect(c(1:678)[(678-rank(dt$screen))<121],c(1:678)[(678-rank(dt$screen.7))<121]))/120,
+length(intersect(c(1:678)[(678-rank(dt$screen))<121],c(1:678)[(678-rank(dt$screen.8))<121]))/120,
+length(intersect(c(1:678)[(678-rank(dt$screen))<121],c(1:678)[(678-rank(dt$screen.9))<121]))/120)
+names = c("KF-M1","DCSIS-M1","MVSIS-M1","KF-M2","DCSIS-M2","MVSIS-M2","KF-M3","DCSIS-M3","MVSIS-M3")
+print (as.data.frame(overlap_proportion,row.names=names))
+```
