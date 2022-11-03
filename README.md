@@ -11,7 +11,7 @@
 
 `install.packages("energy")`
 
-## Case Study 
+## Case Study Folder: 
 
 ### Folder Code Description:
 
@@ -34,7 +34,7 @@ Note: since the data contain Chinese characters, so we need to encode the CSV fi
 
 
 
-## Simulation
+## Simulation Folder
 
 ### Example1-3  Description:
 | File Name | Description  |
