@@ -4,20 +4,28 @@
 
 `if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")`
+    
 `BiocManager::install("Icens")`
 
-`install.packages(“Interval”)`
+`install.packages("interval")`
 
+`install.packages("energy")`
 
 ## Case Study 
 
 ### Folder Code Description:
 
-CaseStudyCode_Final.R: The R code for the case study. 
+CaseStudyCode_Final.Rmd: The Rmd file for the case study. 
 
 
 
 ### Folder Data Description:
+
+| File Name | Description  |
+| ------- | --- |
+| REAL_DATA.csv | The original text data |
+| ------- | --- |
+|Words.csv| 1043 words generated from the original text data|
 
 REAL_DATA.csv: The original text data 
 
