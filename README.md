@@ -46,10 +46,12 @@ Note: since the data contain Chinese characters, so we need to encode the CSV fi
 
 
 
-### Example4  Description:
+### Example 4  Description:
+| File Name | Description  |
+| ------- | --- |
+| Code/Robustness.R | The original code to run the simulation |
+|Code/ResultsAnalysis.Rmd| Analyze the intermediate results and generate Table 2 in paper |
+|Folder Intermediate| Store all the intermediate data for simulations. |
+|Code/ResultsAnalysis.Rmd| Analyze the intermediate results and generate Table 1 in paper|
+|Folder Intermediate|Store all the intermediate data for simulations|
 
-Code/Robustness.R: The original code to tun the simulation
-
-Code/ResultsAnalysis.Rmd: Analyze the intermediate results and generate Table 2 in paper. 
-Intermediate: Store all the intermediate data for simulations. 
-Results/ResultsAnalysis.html: The returned results for Code/ResultsAnalysis.Rmd. 
