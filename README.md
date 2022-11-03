@@ -60,37 +60,33 @@ Note: since the data contain Chinese characters, so we need to encode the CSV fi
 
 The following steps give the instruction on how to reproduce the analytical results: 
 
-Step 1: Run the following code to install the corrospoding packages:
-if (!require("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
+### Step 1: Install the corresponding packages:
 
-BiocManager::install("Icens")
+### Step 2: Load the following R- packages with the specified versions: 
+| Package | Versioj  |
+| ------- | --- |
+|Icens version | 1.58.0|
+|Interval version|1.1-0.1|
+|MASS version|7.3-51.6|
+|dplyr version|0.8.5|
+|energy version|1.7-7|
+|readr version|1.3.1|
 
-install.packages(“Interval”)
 
-install.packages(“Energy”)
-Step 2: Load the following R- packages with the specified versions: 
-	
-Icens version: 1.58.0
-Interval version: 1.1-0.1
-MASS version: 7.3-51.6
-dplyr version: 0.8.5
-energy version: 1.7-7
-readr version: 1.3.1
-Step 3: Simulation Example1-3 (Table 1 in paper): Use the “”Simulation/Example1-3” folder:
+### Step 3: Simulation Example1-3 (Table 1 in paper): Use the “”Simulation/Example1-3” folder:
 (1)	Run the “Code/COX_FullVersion.R”, “Code/GLM_ FullVersion.R” and “Code/LM_ FullVersion.R” code. It might take 40 hours to run these three files. 
 (2)	We store the intermediate results for simulation in “Intermediate” folder
 (3)	Use ‘Code/ResultsAnalysis.Rmd’ to generate performance evaluation for simulation.
 (4)	“Results/ ResultsAnalysis.html” contains all generated results from file ‘Code/ResultsAnalysis.Rmd’
-Step 4: Simulation Exampe 4 (Table 2 in paper):: Use the “”Simulation/Example4” folder:
+### Step 4: Simulation Exampe 4 (Table 2 in paper):: Use the “”Simulation/Example4” folder:
 (1)	Run the “Code/Robustness.R”. It might take 10 hours to run this file. 
 (2)	We store the intermediate results for simulation in “Intermediate” folder
 (3)	Use ‘Code/ResultsAnalysisRmd to generate performance evaluation for simulation. 
 (4)	“Results/ ResultsAnalysis.html” contains all generated results from file ‘Code/ResultsAnalysis.Rmd’
-Step 5: Case Study Part: Use the “”CaseStudy” folder:
+### Step 5: Case Study Part: Use the “”CaseStudy” folder:
 (1)	Use ‘CaseStudy/Code/CaseStudyCode_Final.Rmd’ file to generate the results.
 (2)	’CaseStudy/Results/CaseStudyCode_Final.html’ file contains all generated results from ‘CaseStudy/Code/CaseStudyCode_Final.Rmd’
-Step 6: Supplementary Part: Use the ‘”SUPP” folder: 
+### Step 6: Supplementary Part: Use the ‘”SUPP” folder: 
 (1)	‘TableS.1/Code/TableS.1.Rmd’ reproduces the results in Table S.1 and ‘TableS.1/Results/TableS.1.html’ contains the associated results. 
 (2)	For reproducing the results TableS.2, file ‘TableS.2/Code/DistanceComparison.Rmd’ runs the simulation examples and we store the intermediate results in ‘TableS.2/Intermediate’ folder. File ‘TableS.2/Code/ResultsAnalysis.Rmd’ analyzes the intermediate results and we attch the outcome in ‘TableS.2/Results’ folder. 
 (3)	For Table S.3, ‘TableS.3/Overlap.Rmd’ reproduces the results. 
