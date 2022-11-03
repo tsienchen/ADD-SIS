@@ -90,5 +90,5 @@ The following steps give the instruction on how to reproduce the analytical resu
 (1)	‘TableS.1/TableS.1.Rmd’ reproduces the results in Table S.1.   
 (2)	For reproducing the results TableS.2, file ‘TableS.2/Code/DistanceComparison.Rmd’ runs the simulation examples and we store the intermediate results in ‘TableS.2/Intermediate’ folder. File ‘TableS.2/Code/ResultsAnalysis.Rmd’ analyzes the intermediate results.     
 (3)	For Table S.3, ‘TableS.3/Overlap.Rmd’ reproduces the results.    
-(4)	For Table S.4 and TableS.5, the utilized data is in ‘TableS.4&5/Data’ folder, and ‘TableS.4&5/Code/CaseStudy-Web.Rmd’ runs the corrosponding analysis and the generated results are attahced in ‘TableS.4&5/Results/ CaseStudy-Web.html’ file.   
+(4)	For Table S.4 and TableS.5, the utilized data is in ‘TableS.4&5/Data’ folder, and ‘TableS.4&5/Code/CaseStudy-Web.Rmd’ runs the corrosponding analysis.     
 (5)	For Table S.6-S.8, use the code within ‘TableS.6-8’ folder.  
