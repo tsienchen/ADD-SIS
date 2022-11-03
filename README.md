@@ -15,9 +15,10 @@
 
 ### Folder Code Description:
 
-CaseStudyCode_Final.Rmd: The Rmd file for the case study. 
 
-
+| File Name | Description  |
+| ------- | --- |
+| CaseStudyCode_Final.Rmd | The Rmd file for the case study|
 
 ### Folder Data Description:
 
